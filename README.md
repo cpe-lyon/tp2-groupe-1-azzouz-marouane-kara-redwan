@@ -318,5 +318,75 @@ sont bien des entiers.***
 stockées au fur et à mesure dans un tableau.***
 
     ```
+    #!/bin/bash
     
+    function is_number()
+    {
+    	re='^[+-]?[0-9]+([.][0-9]+)?$'
+    	if ! [[ $1 =~ $re ]] ; then
+    		return 1
+    	else
+    		return 0
+    	fi
+    }
+    
+    function in_range()
+    {
+    	if [ $1 -lt -100 ]; then
+    		echo "$1 out of range"
+    		exit 1
+    	fi
+    
+    	if [ $1 -gt 100 ]; then
+    		echo "$1 out of range"
+    		exit 1
+    	fi
+    }
+    
+    function quit()
+    {
+    	echo "$1 not an integer"
+    	exit 1
+    }
+    
+    min=100
+    max=-100
+    number=0
+    
+    diviseur=0
+    sum=0
+    echo "Enter 'end' when you finished entering the marks"
+    while true; do
+    	read -p "Entrez la note de l'étudiant" number
+    	if [ $number == "end" ]; then
+    		break
+    	fi
+    
+    	numbers[$diviseur]=$number
+    	is_number $number
+    	if [ $? -eq 1 ]; then
+    		quit $number
+    	fi
+    
+    	in_range $number
+    	if [ $number -lt $min ]; then
+    		min=$number
+    	fi
+    
+    	if [ $number -gt $max ]; then
+    		max=$number
+    	fi
+    	diviseur=$(($diviseur+1))
+    	sum=$(($sum+$number))
+    	shift
+    done
+    	echo "
+    Notes entrées :
+    $i ${numbers[*]}"
+    
+    echo "
+    Minimum : $min
+    Maximum : $max
+    Moyenne : $(($sum/$diviseur))"
+
     ```
