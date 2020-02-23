@@ -170,63 +170,79 @@ et la moyenne. Vous pouvez réutiliser la fonction de l’exercice 3 pour vous a
 sont bien des entiers.***
     ```
     #!/bin/bash
-    
+        
     function is_number()
     {
-            re='^[+-]?[0-9]+([.][0-9]+)?$'
-            if ! [[ $1 =~ $re ]] ; then
-                    return 1
-            else
-                    return 0
-            fi
+        re='^[+-]?[0-9]+([.][0-9]+)?$'
+        if ! [[ $1 =~ $re ]] ; then
+                return 1
+        else
+                return 0
+        fi
+    }
+    
+    function in_range() 
+    {
+    if [ $1 -lt -100 ]; then
+    	echo "$1 out of range (<-100)"
+    	exit 1
+    fi
+    
+    if [ $1 -gt 100 ]; then
+    	echo "$1 out of range (>100)"
+    	exit 1
+    fi
     }
     
     function quit()
     {
-            echo "$1 not an integer"
-            exit 1
+        echo "$1 not an integer"
+        exit 1
     }
     
     min=100
     max=-100
     
     is_number $1
+    in_range $1
     if [ $? -eq 1 ]; then
-            quit $1
+        quit $1
     fi
     
     is_number $2
+    in_range $2
     if [ $? -eq 1 ]; then
-            quit $2
+        quit $2
     fi
     
     is_number $3
+    in_range $3
     if [ $? -eq 1 ]; then
-            quit $3
+        quit $3
     fi
     
     if [ $1 -lt $min ]; then
-            min=$1
+        min=$1
     fi
     
     if [ $2 -lt $min ]; then
-            min=$2
+        min=$2
     fi
     
     if [ $3 -lt $min ]; then
-            min=$3
+        min=$3
     fi
     
     if [ $1 -gt $max ]; then
-            max=$1
+        max=$1
     fi
     
     if [ $2 -gt $max ]; then
-            max=$2
+        max=$2
     fi
     
     if [ $3 -gt $max ]; then
-            max=$3
+        max=$3
     fi
     
     echo "Minimum : $min
@@ -237,7 +253,65 @@ sont bien des entiers.***
 
 2. ***Généralisez le programme à un nombre quelconque de paramètres (pensez à SHIFT)***
     ```
+    #!/bin/bash
     
+    function is_number()
+    {
+    	re='^[+-]?[0-9]+([.][0-9]+)?$'
+    	if ! [[ $1 =~ $re ]] ; then
+    		return 1
+    	else
+    		return 0
+    	fi
+    }
+    
+    function in_range()
+    {
+    	if [ $1 -lt -100 ]; then
+    		echo "$1 out of range"
+    		exit 1
+    	fi
+    
+    	if [ $1 -gt 100 ]; then
+    		echo "$1 out of range"
+    		exit 1
+    	fi
+    }
+    
+    function quit()
+    {
+    	echo "$1 not an integer"
+    	exit 1
+    }
+    
+    min=100
+    max=-100
+    diviseur=0
+    sum=0
+    while (( "$#" )); do
+    	
+    	is_number $1
+    	if [ $? -eq 1 ]; then
+    		quit $1
+    	fi
+    
+    	in_range $1
+    	if [ $1 -lt $min ]; then
+    		min=$1
+    	fi
+    
+    	if [ $1 -gt $max ]; then
+    		max=$1
+    	fi
+    	diviseur=$(($diviseur+1))
+    	sum=$(($sum+$1))
+    	shift
+    done
+    
+    echo "Minimum : $min
+    Maximum : $max
+    Moyenne : $(($sum/$diviseur))"
+
     ```
 
 3. ***Modifiez votre programme pour que les notes ne soient plus données en paramètres, mais saisies et
